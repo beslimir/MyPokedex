@@ -21,6 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
+/**
+ * The search bar user for searching pokemon which were scrolled
+ *
+ * **/
+
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,

@@ -12,6 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * The section used for loading the items if something went wrong
+ *
+ * **/
+
 @Composable
 fun RetrySection(
     error: String,

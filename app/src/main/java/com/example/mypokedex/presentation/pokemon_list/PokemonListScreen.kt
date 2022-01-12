@@ -15,6 +15,12 @@ import com.example.mypokedex.R
 import com.example.mypokedex.presentation.pokemon_list.components.PokemonList
 import com.example.mypokedex.presentation.pokemon_list.components.SearchBar
 
+/**
+ * Main screen:
+ * PokemonListScreen -> SearchBar & PokemonList -> RetrySection & PokedexRow -> PokedexEntry
+ *
+ * **/
+
 @Composable
 fun PokemonListScreen(
     navController: NavController,

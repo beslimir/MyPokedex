@@ -25,9 +25,17 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.example.mypokedex.data.model.PokedexListEntry
+import com.example.mypokedex.presentation.Screen
 import com.example.mypokedex.presentation.pokemon_list.PokemonListViewModel
 import com.example.mypokedex.ui.theme.RobotoCondensed
 import kotlinx.coroutines.launch
+
+/**
+ * Represents one pokemon shown in the list. It's a rectangle with an
+ * image, color and name. calcDominantColor is called here which gets
+ * the dominant color which does the vertical gradient effect
+ *
+ * **/
 
 @ExperimentalCoilApi
 @Composable
@@ -61,7 +69,7 @@ fun PokedexEntry(
             )
             .clickable {
                 navController.navigate(
-                    "pokemon_details_screen/${dominantColor.toArgb()}/${entry.pokemonName}"
+                    Screen.PokemonDetailsScreen.route + "/${dominantColor.toArgb()}/${entry.pokemonName}"
                 )
             }
     ) {

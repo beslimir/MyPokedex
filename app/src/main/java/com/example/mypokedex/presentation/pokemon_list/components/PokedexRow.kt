@@ -7,6 +7,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mypokedex.data.model.PokedexListEntry
 
+/**
+ * PokedexRow has two rectangles with pokemon image and name.
+ * If we have an uneven number of pokemon, the second rectangle
+ * will be empty.
+ *
+ * Example: If we have 5 pokemon, we will have 3 rows (indexes 0, 1, 2).
+ * 5 >= 0 * 2 + 2 -> add a second rectangle
+ * 5 >= 1 * 2 + 2 -> add a second rectangle
+ * 5 < 2 * 2 + 2 -> add Spacer which represents an empty rectangle
+ *
+ * **/
+
 @Composable
 fun PokedexRow(
     rowIndex: Int,

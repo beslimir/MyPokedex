@@ -16,6 +16,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mypokedex.presentation.pokemon_list.PokemonListViewModel
 
+/**
+ * Calculates the number of rows and shows pokemon in a list
+ *
+ * **/
+
 @Composable
 fun PokemonList(
     navController: NavController,
