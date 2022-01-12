@@ -17,18 +17,19 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.request.ImageRequest
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
 import com.example.mypokedex.data.model.PokedexListEntry
 import com.example.mypokedex.presentation.pokemon_list.PokemonListViewModel
 import com.example.mypokedex.ui.theme.RobotoCondensed
-import com.google.accompanist.coil.rememberCoilPainter
+import kotlinx.coroutines.launch
 
+@ExperimentalCoilApi
 @Composable
 fun PokedexEntry(
     entry: PokedexListEntry,
@@ -65,38 +66,40 @@ fun PokedexEntry(
             }
     ) {
         Column {
+            val painter = rememberImagePainter(
+                data = entry.imageUrl
+            )
+            val painterState = painter.state
             Image(
-                painter = rememberCoilPainter(
-                    request = ImageRequest.Builder(LocalContext.current)
-                        .data(entry.imageUrl)
-                        .target {
-                            viewModel.calcDominantColor(it) { color ->
-                                dominantColor = color
-                            }
-                        }
-                        .build(),
-                    fadeIn = true
-                ),
+                painter = painter,
                 contentDescription = entry.pokemonName,
                 modifier = Modifier
                     .size(120.dp)
-                    .align(CenterHorizontally)
+                    .align(CenterHorizontally),
             )
-
-//            CircularProgressIndicator(
-//                color = MaterialTheme.colors.primary,
-//                modifier = Modifier.scale(0.5f)
-//            )
-
+            if (painterState is ImagePainter.State.Loading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .scale(0.5f)
+                        .align(CenterHorizontally)
+                )
+            } else if (painterState is ImagePainter.State.Success) {
+                LaunchedEffect(key1 = painter) {
+                    launch {
+                        val image = painter.imageLoader.execute(painter.request).drawable
+                        viewModel.calcDominantColor(image!!) {
+                            dominantColor = it
+                        }
+                    }
+                }
+            }
             Text(
                 text = entry.pokemonName,
                 fontFamily = RobotoCondensed,
-                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
-
-
 }
