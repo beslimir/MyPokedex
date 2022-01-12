@@ -74,7 +74,8 @@ fun PokedexEntry(
                                 dominantColor = color
                             }
                         }
-                        .build()
+                        .build(),
+                    fadeIn = true
                 ),
                 contentDescription = entry.pokemonName,
                 modifier = Modifier
