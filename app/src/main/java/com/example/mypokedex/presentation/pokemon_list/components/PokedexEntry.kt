@@ -1,5 +1,6 @@
 package com.example.mypokedex.presentation.pokemon_list.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +27,7 @@ import coil.request.ImageRequest
 import com.example.mypokedex.data.model.PokedexListEntry
 import com.example.mypokedex.presentation.pokemon_list.PokemonListViewModel
 import com.example.mypokedex.ui.theme.RobotoCondensed
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 
 @Composable
 fun PokedexEntry(
@@ -64,26 +65,28 @@ fun PokedexEntry(
             }
     ) {
         Column {
-            CoilImage(
-                request = ImageRequest.Builder(LocalContext.current)
-                    .data(entry.imageUrl)
-                    .target {
-                        viewModel.calcDominantColor(it) { color ->
-                            dominantColor = color
+            Image(
+                painter = rememberCoilPainter(
+                    request = ImageRequest.Builder(LocalContext.current)
+                        .data(entry.imageUrl)
+                        .target {
+                            viewModel.calcDominantColor(it) { color ->
+                                dominantColor = color
+                            }
                         }
-                    }
-                    .build(),
+                        .build()
+                ),
                 contentDescription = entry.pokemonName,
-                fadeIn = true,
                 modifier = Modifier
                     .size(120.dp)
                     .align(CenterHorizontally)
-            ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.scale(0.5f)
-                )
-            }
+            )
+
+//            CircularProgressIndicator(
+//                color = MaterialTheme.colors.primary,
+//                modifier = Modifier.scale(0.5f)
+//            )
+
             Text(
                 text = entry.pokemonName,
                 fontFamily = RobotoCondensed,
