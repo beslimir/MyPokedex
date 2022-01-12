@@ -58,6 +58,8 @@ fun SearchBar(
         )
     }
 
+    //other way (older)
+
 //    Box(modifier = modifier) {
 //        BasicTextField(
 //            value = text,
