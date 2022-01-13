@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mypokedex.presentation.Screen
+import com.example.mypokedex.presentation.pokemon_details.PokemonDetailsScreen
 import com.example.mypokedex.presentation.pokemon_list.PokemonListScreen
 import com.example.mypokedex.ui.theme.MyPokedexTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +47,15 @@ class MainActivity : ComponentActivity() {
                                 Color(it)
                             } ?: Color.White
                         }
-                        val pokemonName = it.arguments?.getString("pokemonName")
+                        val pokemonName = remember {
+                            it.arguments?.getString("pokemonName")
+                        }
+
+                        PokemonDetailsScreen(
+                            dominantColor = dominantColor,
+                            pokemonName = pokemonName ?: "No name",
+                            navController = navController
+                        )
                     }
                 }
             }
