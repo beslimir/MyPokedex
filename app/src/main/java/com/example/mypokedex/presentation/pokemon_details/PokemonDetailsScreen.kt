@@ -14,10 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -93,7 +90,11 @@ fun PokemonDetailsScreen(
         ) {
             if (pokemonInfo is Resource.Success) {
                 pokemonInfo.data?.sprites?.let {
-                    val url = it.frontDefault
+                    val frontImage = it.frontDefault
+                    val backImage = it.backDefault
+                    var url by remember {
+                        mutableStateOf(frontImage)
+                    }
                     val image = loadPictureWithGlide(url = url).value
                     image?.let { img ->
                         Image(
@@ -102,6 +103,13 @@ fun PokemonDetailsScreen(
                             modifier = Modifier
                                 .size(pokemonImageSize)
                                 .offset(y = topPadding)
+                                .clickable {
+                                    url = if (url == frontImage) {
+                                        backImage
+                                    } else {
+                                        frontImage
+                                    }
+                                }
                         )
                     }
 
