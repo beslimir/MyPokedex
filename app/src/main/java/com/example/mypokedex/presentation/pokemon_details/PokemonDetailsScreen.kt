@@ -1,5 +1,8 @@
 package com.example.mypokedex.presentation.pokemon_details
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +15,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,11 +24,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.mypokedex.data.remote.dto.Pokemon
 import com.example.mypokedex.util.Resource
 
@@ -84,22 +93,56 @@ fun PokemonDetailsScreen(
         ) {
             if (pokemonInfo is Resource.Success) {
                 pokemonInfo.data?.sprites?.let {
-                    var url = it.frontDefault
-                    val painter = rememberImagePainter(
-                        data = url
-                    )
+                    val url = it.frontDefault
+                    val image = loadPictureWithGlide(url = url).value
+                    image?.let { img ->
+                        Image(
+                            bitmap = img.asImageBitmap(),
+                            contentDescription = pokemonName,
+                            modifier = Modifier
+                                .size(pokemonImageSize)
+                                .offset(y = topPadding)
+                        )
+                    }
 
-                    Image(
-                        painter = painter,
-                        contentDescription = pokemonName,
-                        modifier = Modifier
-                            .size(pokemonImageSize)
-                            .offset(y = topPadding)
-                    )
+                    //SECOND WAY OF LOADING PICTURES (used in PokemonList screen)
+//                    val painter = rememberImagePainter(
+//                        data = url
+//                    )
+//
+//                    Image(
+//                        painter = painter,
+//                        contentDescription = pokemonName,
+//                        modifier = Modifier
+//                            .size(pokemonImageSize)
+//                            .offset(y = topPadding)
+//                    )
                 }
             }
         }
     }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun loadPictureWithGlide(
+    url: String
+): MutableState<Bitmap?> {
+
+    val bitmapState: MutableState<Bitmap?> = mutableStateOf(null)
+
+    Glide.with(LocalContext.current)
+        .asBitmap()
+        .load(url)
+        .into(object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                bitmapState.value = resource
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {}
+        })
+
+    return bitmapState
 }
 
 @Composable
