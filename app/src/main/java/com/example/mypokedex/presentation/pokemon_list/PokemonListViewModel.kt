@@ -3,6 +3,7 @@ package com.example.mypokedex.presentation.pokemon_list
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,30 @@ class PokemonListViewModel @Inject constructor(
     }
 
     fun searchPokemonList(query: String) {
+        if (query.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.Default) {
+                val searchedPokemon = repository.getPokemonByName(query.lowercase())
+                when (searchedPokemon) {
+                    is Resource.Success -> {
+                        val pokemonName = searchedPokemon.data!!.name
+                        val pokemonId = searchedPokemon.data.id
+                        val url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$pokemonId.png"
+                        pokemonList.value = listOf(PokedexListEntry(
+                            pokemonName = pokemonName,
+                            imageUrl = url,
+                            number = pokemonId
+                        ))
+                    }
+                    is Resource.Error -> {
+
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }
+        }
+
         val listToSearch = if (isSearchStarting) {
             pokemonList.value
         } else {
